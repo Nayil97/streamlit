@@ -42,6 +42,7 @@ class HtmlMixin:
         body: str | Path | SupportsStr | SupportsReprHtml,
         *,  # keyword-only arguments:
         width: Width = "stretch",
+        unsafe_allow_javascript: bool = False,
     ) -> DeltaGenerator:
         """Insert HTML into your app.
 
@@ -52,8 +53,10 @@ class HtmlMixin:
         loading external code can increase the risk of vulnerabilities in your
         app.
 
-        ``st.html`` content is **not** iframed. Executing JavaScript is not
-        supported at this time.
+        ``st.html`` content is **not** iframed. By default, JavaScript is
+        ignored. To execute JavaScript contained in the HTML, set
+        ``unsafe_allow_javascript=True``. Use with caution and never pass
+        untrusted input.
 
         Parameters
         ----------
@@ -128,6 +131,8 @@ class HtmlMixin:
 
         validate_width(width, allow_content=True)
         layout_config = LayoutConfig(width=width)
+
+        html_proto.unsafe_allow_javascript = unsafe_allow_javascript
 
         # Handle the case where there are only style tags - issue #9388
         # Use event container for style tags so they don't take up space in the app content
