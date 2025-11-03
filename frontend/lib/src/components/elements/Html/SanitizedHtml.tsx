@@ -16,36 +16,12 @@
 
 import { memo, ReactElement, useMemo } from "react"
 
-import dompurify from "dompurify"
-
+import dompurify from "./dompurifyHooks"
 import HtmlContainer from "./HtmlContainer"
 
 export interface SanitizedHtmlProps {
   body: string
 }
-
-// preserve target=_blank and set security attributes (see https://github.com/cure53/DOMPurify/issues/317)
-const TEMPORARY_ATTRIBUTE = "data-temp-href-target"
-dompurify.addHook("beforeSanitizeAttributes", function (node) {
-  if (
-    node instanceof HTMLElement &&
-    node.hasAttribute("target") &&
-    node.getAttribute("target") === "_blank"
-  ) {
-    node.setAttribute(TEMPORARY_ATTRIBUTE, "_blank")
-  }
-})
-dompurify.addHook("afterSanitizeAttributes", function (node) {
-  if (node instanceof HTMLElement && node.hasAttribute(TEMPORARY_ATTRIBUTE)) {
-    node.setAttribute("target", "_blank")
-    // according to https://html.spec.whatwg.org/multipage/links.html#link-type-noopener,
-    // noreferrer implies noopener, but we set it just to be sure in case some browsers
-    // do not implement the spec accordingly.
-    node.setAttribute("rel", "noopener noreferrer")
-    node.removeAttribute(TEMPORARY_ATTRIBUTE)
-  }
-})
-
 const sanitizeString = (html: string): string => {
   const sanitizationOptions = {
     // Default to permit HTML, SVG and MathML, this limits to HTML only
