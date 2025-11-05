@@ -79,6 +79,11 @@ export interface AppViewProps {
 
   uploadClient: FileUploadClient
 
+  requestDeferredFile?: (fileId: string) => Promise<{
+    url: string
+    errorMsg?: string
+  }>
+
   navigationPosition: Navigation.Position
 
   topRightContent?: React.ReactNode
@@ -112,6 +117,7 @@ function AppView(props: AppViewProps): ReactElement {
     elements,
     widgetMgr,
     uploadClient,
+    requestDeferredFile,
     sendMessageToHost,
     endpoints,
     navigationPosition,
@@ -202,6 +208,7 @@ function AppView(props: AppViewProps): ReactElement {
       widgetMgr={widgetMgr}
       widgetsDisabled={widgetsDisabled}
       uploadClient={uploadClient}
+      requestDeferredFile={requestDeferredFile}
       disableFullscreenMode={disableFullscreenMode}
       componentRegistry={componentRegistry}
       height="auto"
